@@ -1,0 +1,6 @@
+# Keep LF endings on every platform (setup docs target Linux/macOS).
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
