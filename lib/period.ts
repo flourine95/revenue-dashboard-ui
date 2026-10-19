@@ -31,6 +31,14 @@ export function rangeDays(range: DateRange): number {
   )
 }
 
+/** Every calendar date in the range, inclusive. */
+export function datesInRange(range: DateRange): string[] {
+  const start = parseIsoDate(range.from)
+  return Array.from({ length: rangeDays(range) }, (_, index) =>
+    toIsoDate(addDays(start, index))
+  )
+}
+
 /** Moves a range by whole weeks, keeping its length. */
 export function shiftWeek(range: DateRange, weeks: number): DateRange {
   const from = addDays(parseIsoDate(range.from), weeks * 7)

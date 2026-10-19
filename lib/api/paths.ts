@@ -9,3 +9,13 @@ export function dashboardPath(range: DateRange, compare: boolean): string {
   })
   return `/api/dashboard?${params.toString()}`
 }
+
+export function adminMetricsPath(range: DateRange): string {
+  const params = new URLSearchParams({ from: range.from, to: range.to })
+  return `/api/admin/metrics?${params.toString()}`
+}
+
+export function adminEventsPath(range: DateRange): string {
+  const params = new URLSearchParams({ from: range.from, to: range.to })
+  return `/api/admin/events?${params.toString()}`
+}

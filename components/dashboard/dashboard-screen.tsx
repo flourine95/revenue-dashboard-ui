@@ -1,8 +1,9 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { AlertCircle, BarChart3, RotateCcw } from "lucide-react"
+import { AlertCircle, BarChart3, RotateCcw, Settings2 } from "lucide-react"
 import { getDashboard, logout } from "@/lib/api/endpoints"
 import { ApiError } from "@/lib/api/error"
 import type { DashboardResponse, User } from "@/lib/api/types"
@@ -108,6 +109,15 @@ export function DashboardScreen({
               pending={pending}
             />
             <UserMenu user={user} onLogout={handleLogout} />
+            <Link
+              href="/admin"
+              prefetch={false}
+              aria-label="Manage data"
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/10 bg-white/70 px-3 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/5"
+            >
+              <Settings2 className="size-3.5" />
+              <span className="hidden sm:inline">Admin</span>
+            </Link>
           </div>
         </header>
 

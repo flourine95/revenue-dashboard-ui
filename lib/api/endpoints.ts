@@ -1,5 +1,5 @@
 import { apiFetch } from "./client"
-import { dashboardPath } from "./paths"
+import { adminEventsPath, adminMetricsPath, dashboardPath } from "./paths"
 import type {
   AdminEventResponse,
   AdminEventsResponse,
@@ -42,10 +42,7 @@ export function getYearOverYear(range: DateRange) {
 }
 
 export function getAdminMetrics(range: DateRange) {
-  const params = new URLSearchParams({ from: range.from, to: range.to })
-  return apiFetch<AdminMetricsResponse>(
-    `/api/admin/metrics?${params.toString()}`
-  )
+  return apiFetch<AdminMetricsResponse>(adminMetricsPath(range))
 }
 
 export function putAdminMetric(date: string, input: MetricInput) {
@@ -60,11 +57,9 @@ export function deleteAdminMetric(date: string) {
 }
 
 export function getAdminEvents(range?: DateRange) {
-  const query =
-    range === undefined
-      ? ""
-      : `?${new URLSearchParams({ from: range.from, to: range.to }).toString()}`
-  return apiFetch<AdminEventsResponse>(`/api/admin/events${query}`)
+  return apiFetch<AdminEventsResponse>(
+    range === undefined ? "/api/admin/events" : adminEventsPath(range)
+  )
 }
 
 export function createAdminEvent(input: EventInput) {
