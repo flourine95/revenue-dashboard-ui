@@ -61,6 +61,7 @@ export function ExportButton({
           ? "Export failed — please try again"
           : "Download this card as a PNG"
       }
+      aria-busy={pending}
       className="inline-flex h-8 items-center gap-2 rounded-full bg-white px-3.5 text-xs font-medium whitespace-nowrap text-foreground ring-1 ring-black/10 transition-all hover:bg-black/[0.03] disabled:cursor-wait disabled:opacity-60 sm:text-[13px] dark:bg-transparent dark:ring-white/15"
     >
       {pending ? (
@@ -68,7 +69,7 @@ export function ExportButton({
       ) : (
         <Download className="size-3.5" />
       )}
-      {pending ? "Exporting…" : "Export PNG"}
+      Export PNG
     </button>
   )
 }

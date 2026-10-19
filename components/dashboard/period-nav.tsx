@@ -1,6 +1,7 @@
 "use client"
 
 import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
 import { formatRange, isCurrentWeek, type DateRange } from "@/lib/period"
 
 export function PeriodNav({
@@ -25,7 +26,7 @@ export function PeriodNav({
         <ChevronLeft className="size-3.5" />
       </button>
 
-      <span className="min-w-32 px-1 text-center text-xs font-medium tabular-nums sm:min-w-36 sm:text-[13px]">
+      <span className="w-36 px-1 text-center text-xs font-medium tabular-nums sm:w-40 sm:text-[13px]">
         {formatRange(range)}
       </span>
 
@@ -38,19 +39,22 @@ export function PeriodNav({
         <ChevronRight className="size-3.5" />
       </button>
 
-      {!isCurrentWeek(range) && (
-        <button
-          type="button"
-          onClick={onToday}
-          className="ml-0.5 rounded-full bg-ink px-2.5 py-1 text-[11px] font-medium text-white hover:bg-ink/90"
-        >
-          This week
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onToday}
+        disabled={isCurrentWeek(range)}
+        className="ml-0.5 rounded-full bg-ink px-2.5 py-1 text-[11px] font-medium text-white transition-opacity hover:bg-ink/90 disabled:pointer-events-none disabled:opacity-35"
+      >
+        This week
+      </button>
 
-      {pending && (
-        <Loader2 className="mr-1.5 ml-0.5 size-3.5 animate-spin text-muted-foreground" />
-      )}
+      <Loader2
+        aria-hidden={!pending}
+        className={cn(
+          "mr-1.5 ml-0.5 size-3.5 animate-spin text-muted-foreground",
+          !pending && "invisible"
+        )}
+      />
     </div>
   )
 }

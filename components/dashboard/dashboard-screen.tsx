@@ -32,8 +32,11 @@ export function DashboardScreen({
   const [error, setError] = useState<string | null>(null)
   const [attempt, setAttempt] = useState(0)
 
-  const requestKey = `${range.from}:${range.to}:${compare}:${attempt}`
-  const loadedKey = useRef(`${initialRange.from}:${initialRange.to}:true:0`)
+  // The comparison payload is always fetched. Toggling "Compare to Previous"
+  // only changes what is rendered, so the layout never reflows and there is no
+  // extra round-trip when the toggle is pressed.
+  const requestKey = `${range.from}:${range.to}:${attempt}`
+  const loadedKey = useRef(`${initialRange.from}:${initialRange.to}:0`)
 
   useEffect(() => {
     if (requestKey === loadedKey.current) return
@@ -42,7 +45,7 @@ export function DashboardScreen({
     setPending(true)
     setError(null)
 
-    getDashboard(range, compare)
+    getDashboard(range, true)
       .then((next) => {
         if (cancelled) return
         setData(next)
@@ -69,7 +72,7 @@ export function DashboardScreen({
     return () => {
       cancelled = true
     }
-  }, [requestKey, range, compare, router])
+  }, [requestKey, range, router])
 
   async function handleLogout() {
     try {
@@ -149,12 +152,7 @@ export function DashboardScreen({
           pending={pending}
         />
 
-        <InsightsTabs
-          data={data}
-          range={range}
-          compare={compare}
-          onEnableCompare={() => setCompare(true)}
-        />
+        <InsightsTabs data={data} range={range} />
 
         <p className="mt-4 text-center text-[11px] text-muted-foreground">
           Demo data seeded relative to today · amounts in USD

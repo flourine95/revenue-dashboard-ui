@@ -23,8 +23,7 @@ function Kpi({
   delta?: number | null
   compare: boolean
 }) {
-  const showComparison =
-    compare && previous !== undefined && delta !== undefined
+  const hasComparison = previous !== undefined && delta !== undefined
   const positive = (delta ?? 0) >= 0
 
   return (
@@ -34,8 +33,11 @@ function Kpi({
         <p className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
           {value}
         </p>
-        {showComparison && (
-          <p className="text-[11px] sm:text-xs">
+        {hasComparison && (
+          <p
+            aria-hidden={!compare}
+            className={cn("text-[11px] sm:text-xs", !compare && "invisible")}
+          >
             <span className="text-muted-foreground">vs {previous}</span>{" "}
             {delta !== null && (
               <span className={positive ? "text-positive" : "text-negative"}>
@@ -180,24 +182,32 @@ export function RevenueCard({
       className="rounded-[28px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.18)] ring-1 ring-foreground/5 sm:p-7"
     >
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
-        <div className="min-w-0">
-          <h2 className="max-w-md text-xl leading-tight font-semibold tracking-tight text-balance sm:text-2xl">
+        <div className="min-w-0 xl:w-[28rem]">
+          <h2 className="min-h-[3.25rem] max-w-md text-xl leading-tight font-semibold tracking-tight text-balance sm:min-h-[3.75rem] sm:text-2xl">
             {isCurrentWeek(range)
               ? "This Week's Revenue Trend"
               : "Revenue Trend"}
-            {compare && (
-              <span className="text-muted-foreground"> vs Previous Period</span>
-            )}
+            <span
+              aria-hidden={!compare}
+              className={cn("text-muted-foreground", !compare && "invisible")}
+            >
+              {" "}
+              vs Previous Period
+            </span>
           </h2>
           <p className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
             {formatRange(range)}
             <span aria-hidden="true">·</span>
             <span>USD</span>
-            {pending && (
-              <span className="inline-flex items-center gap-1 text-foreground/60">
-                <Loader2 className="size-3 animate-spin" /> updating
-              </span>
-            )}
+            <span
+              aria-hidden={!pending}
+              className={cn(
+                "inline-flex items-center gap-1 text-foreground/60",
+                !pending && "invisible"
+              )}
+            >
+              <Loader2 className="size-3 animate-spin" /> updating
+            </span>
           </p>
         </div>
 
@@ -311,22 +321,21 @@ export function RevenueCard({
           />
         </div>
         <div className="flex flex-wrap items-center gap-x-7 gap-y-2.5">
-          {compare && (
-            <>
-              <LegendItem
-                color="var(--color-prev-pos)"
-                label="Direct Revenue (Previous)"
-              />
-              <LegendItem
-                color="var(--color-prev-total)"
-                label="Total Revenue (Previous)"
-              />
-              <LegendItem
-                color="var(--color-prev-labour)"
-                label="Labour Costs (Previous)"
-              />
-            </>
-          )}
+          <LegendItem
+            color="var(--color-prev-pos)"
+            label="Direct Revenue (Previous)"
+            dimmed={!compare}
+          />
+          <LegendItem
+            color="var(--color-prev-total)"
+            label="Total Revenue (Previous)"
+            dimmed={!compare}
+          />
+          <LegendItem
+            color="var(--color-prev-labour)"
+            label="Labour Costs (Previous)"
+            dimmed={!compare}
+          />
           <LegendItem icon="positive" label="Positive Event Impact" />
           <LegendItem icon="negative" label="Negative Event Impact" />
         </div>

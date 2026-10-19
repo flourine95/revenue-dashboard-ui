@@ -173,18 +173,14 @@ function EmptyState({
 
 function ComparisonPanel({
   data,
-  compare,
   range,
-  onEnableCompare,
 }: {
   data: DashboardResponse
-  compare: boolean
   range: DateRange
-  onEnableCompare: () => void
 }) {
   const comparison = data.comparison
 
-  if (!compare || comparison === undefined) {
+  if (comparison === undefined) {
     return (
       <div>
         <PanelHeader
@@ -192,18 +188,8 @@ function ComparisonPanel({
           subtitle="How this week compares with the week before it."
         />
         <EmptyState
-          title="Comparison is turned off"
-          description="Turn on “Compare to Previous” to load the previous period's revenue, covers and labour."
-          action={
-            <button
-              type="button"
-              onClick={onEnableCompare}
-              className="inline-flex h-8 items-center gap-2 rounded-full bg-ink px-3.5 text-xs font-medium text-white hover:bg-ink/90"
-            >
-              <ArrowLeftRight className="size-3.5" />
-              Compare with previous period
-            </button>
-          }
+          title="No comparison available"
+          description="The previous period could not be loaded for this range."
         />
       </div>
     )
@@ -492,11 +478,9 @@ function ScorePanel({ data }: { data: DashboardResponse }) {
 type Props = {
   data: DashboardResponse
   range: DateRange
-  compare: boolean
-  onEnableCompare: () => void
 }
 
-export function InsightsTabs({ data, range, compare, onEnableCompare }: Props) {
+export function InsightsTabs({ data, range }: Props) {
   const router = useRouter()
   const [tab, setTab] = useState<TabKey>("comparison")
   const [yoy, setYoy] = useState<YearOverYearResponse | null>(null)
@@ -564,9 +548,9 @@ export function InsightsTabs({ data, range, compare, onEnableCompare }: Props) {
             Period Comparison
           </span>
           <span className="text-base font-semibold tracking-tight">
-            {compare && data.comparison !== undefined
-              ? (formatDelta(data.comparison.deltas.totalRevenue) ?? "—")
-              : "Turn on"}
+            {data.comparison === undefined
+              ? "—"
+              : (formatDelta(data.comparison.deltas.totalRevenue) ?? "—")}
           </span>
           <span className="text-[11px] text-muted-foreground">
             revenue vs previous week
@@ -626,19 +610,14 @@ export function InsightsTabs({ data, range, compare, onEnableCompare }: Props) {
 
       <TabsContent
         value="comparison"
-        className="rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:p-6"
+        className="min-h-[26rem] rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:min-h-[24rem] sm:p-6 lg:min-h-[22rem]"
       >
-        <ComparisonPanel
-          data={data}
-          compare={compare}
-          range={range}
-          onEnableCompare={onEnableCompare}
-        />
+        <ComparisonPanel data={data} range={range} />
       </TabsContent>
 
       <TabsContent
         value="year"
-        className="rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:p-6"
+        className="min-h-[26rem] rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:min-h-[24rem] sm:p-6 lg:min-h-[22rem]"
       >
         <YearOverYearPanel
           data={data}
@@ -651,14 +630,14 @@ export function InsightsTabs({ data, range, compare, onEnableCompare }: Props) {
 
       <TabsContent
         value="budget"
-        className="rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:p-6"
+        className="min-h-[26rem] rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:min-h-[24rem] sm:p-6 lg:min-h-[22rem]"
       >
         <BudgetPanel data={data} range={range} />
       </TabsContent>
 
       <TabsContent
         value="score"
-        className="rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:p-6"
+        className="min-h-[26rem] rounded-3xl bg-card p-5 shadow-sm ring-1 ring-foreground/5 sm:min-h-[24rem] sm:p-6 lg:min-h-[22rem]"
       >
         <ScorePanel data={data} />
       </TabsContent>
