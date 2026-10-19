@@ -52,6 +52,9 @@ export function LoginForm() {
           name="email"
           type="email"
           autoComplete="username"
+          spellCheck={false}
+          aria-invalid={error !== null}
+          aria-describedby={error !== null ? "login-error" : undefined}
           placeholder="you@restaurant.com"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -67,6 +70,8 @@ export function LoginForm() {
           name="password"
           type="password"
           autoComplete="current-password"
+          aria-invalid={error !== null}
+          aria-describedby={error !== null ? "login-error" : undefined}
           placeholder="••••••••"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -77,6 +82,7 @@ export function LoginForm() {
 
       {error !== null && (
         <div
+          id="login-error"
           role="alert"
           className="flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive/5 px-3 py-2.5 text-sm text-destructive"
         >
@@ -109,7 +115,7 @@ export function LoginForm() {
           <button
             type="button"
             onClick={fillDemo}
-            className="shrink-0 font-medium text-foreground underline-offset-4 hover:underline"
+            className="shrink-0 rounded-sm font-medium text-foreground underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             Use it
           </button>

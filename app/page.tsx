@@ -1,23 +1,26 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { DashboardScreen } from "@/components/dashboard/dashboard-screen"
-import { ApiError } from "@/lib/api/error"
 import { dashboardPath } from "@/lib/api/paths"
-import { serverApiFetch } from "@/lib/api/server"
+import { getSessionUser, serverApiFetch } from "@/lib/api/server"
 import type { DashboardResponse } from "@/lib/api/types"
-import { requireUser } from "@/lib/auth"
 import { currentWeek } from "@/lib/period"
 
+export const metadata: Metadata = {
+  title: "Overview",
+}
+
 export default async function Page() {
-  const user = await requireUser()
   const range = currentWeek()
 
-  let data: DashboardResponse
-  try {
-    data = await serverApiFetch<DashboardResponse>(dashboardPath(range, true))
-  } catch (error) {
-    if (error instanceof ApiError && error.status === 401) redirect("/login")
-    throw error
-  }
+  // Fetch the session and the dashboard together; awaiting the session first
+  // would add a full round-trip before the dashboard request starts.
+  const [user, data] = await Promise.all([
+    getSessionUser(),
+    serverApiFetch<DashboardResponse>(dashboardPath(range, true)),
+  ])
+
+  if (user === null) redirect("/login")
 
   return <DashboardScreen user={user} initialRange={range} initialData={data} />
 }

@@ -59,6 +59,7 @@
 }
 
 :root {
+  color-scheme: light;
   --surface: #f2f1ee;
   --panel: #f6f2ee;
   --ink: #1d1d1b;
@@ -68,8 +69,8 @@
   --prev-pos: #cdcdcd;
   --prev-total: #c9c4fb;
   --prev-labour: #f8cbb2;
-  --positive: #15803d;
-  --negative: #b91c1c;
+  --positive: #166534;
+  --negative: #991b1b;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -81,7 +82,7 @@
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -105,6 +106,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --surface: #151514;
   --panel: #1e1e1c;
   --ink: #f2f1ee;
@@ -156,5 +158,23 @@
   html {
     @apply font-sans;
     scrollbar-gutter: stable;
+  }
+  button,
+  a {
+    touch-action: manipulation;
+  }
+  [data-slot="dialog-content"] {
+    overscroll-behavior: contain;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }

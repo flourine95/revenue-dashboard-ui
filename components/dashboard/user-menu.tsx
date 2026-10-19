@@ -24,13 +24,15 @@ export function UserMenu({
       <span className="grid size-7 place-items-center rounded-full bg-ink text-[10px] font-semibold text-white">
         {initials(user.name)}
       </span>
-      <span className="hidden text-xs font-medium sm:block">{user.name}</span>
+      <span className="hidden max-w-32 truncate text-xs font-medium sm:block">
+        {user.name}
+      </span>
       <button
         type="button"
         onClick={onLogout}
         aria-label="Sign out"
         title="Sign out"
-        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none dark:hover:bg-white/10"
       >
         <LogOut className="size-3.5" />
       </button>

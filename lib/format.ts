@@ -26,9 +26,13 @@ export function formatDelta(delta: number | null): string | null {
 /** Chart axis ticks: 750 → "0.75k", 1500 → "1.5k", 0 → "0k". */
 export function formatAxisTick(value: number): string {
   if (value === 0) return "0k"
-  if (value < 1000) return String(value)
+
   const thousands = value / 1000
-  return `${Number.isInteger(thousands) ? thousands : thousands.toFixed(2)}k`
+  const formatted = Number.isInteger(thousands)
+    ? String(thousands)
+    : thousands.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")
+
+  return `${formatted}k`
 }
 
 export function formatDayLabel(date: string): string {

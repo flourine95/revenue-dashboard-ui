@@ -12,6 +12,7 @@ import {
   useXAxisScale,
   useYAxisScale,
 } from "recharts"
+import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import type { ChartRow, SeriesVisibility } from "@/lib/dashboard-data"
 import { formatAxisTick, formatCurrency, formatDayLabel } from "@/lib/format"
 
@@ -170,15 +171,26 @@ export function RevenueChart({
   rows,
   visible,
   compare,
+  label,
+  summary,
 }: {
   rows: ChartRow[]
   visible: SeriesVisibility
   compare: boolean
+  label: string
+  summary: string
 }) {
   const scale = useMemo(() => buildScale(rows), [rows])
+  const reduceMotion = useReducedMotion()
 
   return (
-    <div className="-mx-2 overflow-x-auto px-2 pb-1">
+    <div
+      role="region"
+      aria-label={label}
+      tabIndex={0}
+      className="-mx-2 overflow-x-auto rounded-lg px-2 pb-1 focus-visible:ring-2 focus-visible:ring-ink/30 focus-visible:outline-none"
+    >
+      <p className="sr-only">{summary}</p>
       <div className="h-[320px] min-w-[720px] sm:h-[380px] sm:min-w-0">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
@@ -240,6 +252,7 @@ export function RevenueChart({
                 fill="var(--color-pos)"
                 barSize={32}
                 radius={visible.eatclub ? squareTop : roundedTop}
+                isAnimationActive={!reduceMotion}
               />
             )}
             {visible.eatclub && (
@@ -250,6 +263,7 @@ export function RevenueChart({
                 fill="var(--color-eatclub)"
                 barSize={32}
                 radius={roundedTop}
+                isAnimationActive={!reduceMotion}
               />
             )}
             {visible.labour && (
@@ -259,6 +273,7 @@ export function RevenueChart({
                 fill="var(--color-labour)"
                 barSize={18}
                 radius={roundedTop}
+                isAnimationActive={!reduceMotion}
               />
             )}
 

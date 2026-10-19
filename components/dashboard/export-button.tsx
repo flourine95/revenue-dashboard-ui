@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import type { RefObject } from "react"
-import { toPng } from "html-to-image"
 import { Download, Loader2 } from "lucide-react"
 
 /**
@@ -27,6 +26,8 @@ export function ExportButton({
     setFailed(false)
 
     try {
+      // Load the exporter only when the visitor asks for a PNG.
+      const { toPng } = await import("html-to-image")
       const dataUrl = await toPng(node, {
         cacheBust: true,
         pixelRatio: 2,
@@ -57,12 +58,10 @@ export function ExportButton({
       onClick={handleExport}
       disabled={pending}
       title={
-        failed
-          ? "Export failed — please try again"
-          : "Download this card as a PNG"
+        failed ? "Export failed. Try again." : "Download this card as a PNG"
       }
       aria-busy={pending}
-      className="inline-flex h-8 items-center gap-2 rounded-full bg-white px-3.5 text-xs font-medium whitespace-nowrap text-foreground ring-1 ring-black/10 transition-all hover:bg-black/[0.03] disabled:cursor-wait disabled:opacity-60 sm:text-[13px] dark:bg-transparent dark:ring-white/15"
+      className="inline-flex h-8 items-center gap-2 rounded-full bg-white px-3.5 text-xs font-medium whitespace-nowrap text-foreground ring-1 ring-black/10 transition-colors hover:bg-black/[0.03] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-wait disabled:opacity-60 sm:text-[13px] dark:bg-transparent dark:ring-white/15"
     >
       {pending ? (
         <Loader2 className="size-3.5 animate-spin" />

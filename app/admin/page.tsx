@@ -1,16 +1,20 @@
+import type { Metadata } from "next"
 import { redirect } from "next/navigation"
 import { AdminScreen } from "@/components/admin/admin-screen"
 import { ApiError } from "@/lib/api/error"
 import { adminEventsPath, adminMetricsPath } from "@/lib/api/paths"
-import { serverApiFetch } from "@/lib/api/server"
+import { getSessionUser, serverApiFetch } from "@/lib/api/server"
 import type {
   AdminEventsResponse,
   AdminMetricsResponse,
   EventDto,
   MetricDto,
 } from "@/lib/api/types"
-import { requireUser } from "@/lib/auth"
 import { currentWeek, type DateRange } from "@/lib/period"
+
+export const metadata: Metadata = {
+  title: "Manage data",
+}
 
 async function loadAdminData(
   range: DateRange
@@ -32,9 +36,14 @@ async function loadAdminData(
 }
 
 export default async function AdminPage() {
-  const user = await requireUser()
   const range = currentWeek()
-  const data = await loadAdminData(range)
+
+  const [user, data] = await Promise.all([
+    getSessionUser(),
+    loadAdminData(range),
+  ])
+
+  if (user === null) redirect("/login")
 
   return (
     <AdminScreen

@@ -109,7 +109,7 @@ export function EventDialog({
                   aria-pressed={type === "positive"}
                   onClick={() => setType("positive")}
                   className={cn(
-                    "inline-flex h-full items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors",
+                    "inline-flex h-full items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none",
                     type === "positive"
                       ? "bg-positive/10 text-positive"
                       : "text-muted-foreground hover:text-foreground"
@@ -123,7 +123,7 @@ export function EventDialog({
                   aria-pressed={type === "negative"}
                   onClick={() => setType("negative")}
                   className={cn(
-                    "inline-flex h-full items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors",
+                    "inline-flex h-full items-center gap-1.5 rounded-md px-2 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none",
                     type === "negative"
                       ? "bg-negative/10 text-negative"
                       : "text-muted-foreground hover:text-foreground"

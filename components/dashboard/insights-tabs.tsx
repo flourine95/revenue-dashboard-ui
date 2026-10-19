@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import {
   ArrowLeftRight,
@@ -11,6 +11,7 @@ import {
   TrendingDown,
   TrendingUp,
 } from "lucide-react"
+import type { LucideIcon } from "lucide-react"
 import type { ReactNode } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { getYearOverYear } from "@/lib/api/endpoints"
@@ -59,7 +60,7 @@ function PanelHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <h3 className="text-base font-semibold tracking-tight">{title}</h3>
+        <h2 className="text-base font-semibold tracking-tight">{title}</h2>
         {subtitle !== undefined && (
           <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>
         )}
@@ -475,6 +476,36 @@ function ScorePanel({ data }: { data: DashboardResponse }) {
   )
 }
 
+const TAB_CARD_CLASS =
+  "group flex h-auto min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-2xl border border-black/5 bg-card px-4 py-3 text-left whitespace-normal text-foreground shadow-sm transition-[background-color,box-shadow] hover:bg-black/[0.02] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none dark:border-white/10 dark:hover:bg-white/[0.04] data-active:bg-card data-active:ring-2 data-active:ring-ink/80"
+
+function TabCard({
+  value,
+  icon: Icon,
+  label,
+  valueText,
+  hint,
+}: {
+  value: TabKey
+  icon: LucideIcon
+  label: string
+  valueText: string
+  hint: string
+}) {
+  return (
+    <TabsTrigger value={value} className={TAB_CARD_CLASS}>
+      <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+        <Icon className="size-4 text-foreground" />
+        {label}
+      </span>
+      <span className="text-base font-semibold tracking-tight tabular-nums">
+        {valueText}
+      </span>
+      <span className="text-[11px] text-muted-foreground">{hint}</span>
+    </TabsTrigger>
+  )
+}
+
 type Props = {
   data: DashboardResponse
   range: DateRange
@@ -489,7 +520,7 @@ export function InsightsTabs({ data, range }: Props) {
 
   const yoyKey = `${range.from}:${range.to}`
   const loadedYoyKey = useRef<string | null>(null)
-  const score = performanceScore(data)
+  const score = useMemo(() => performanceScore(data), [data])
   const budgetAttainment =
     data.budget.weeklyRevenue > 0
       ? Math.round((data.kpis.totalRevenue / data.budget.weeklyRevenue) * 100)
@@ -539,73 +570,42 @@ export function InsightsTabs({ data, range }: Props) {
       className="mt-5"
     >
       <TabsList className="grid h-auto w-full grid-cols-2 gap-2 rounded-none bg-transparent p-0 group-data-horizontal/tabs:h-auto lg:grid-cols-4">
-        <TabsTrigger
+        <TabCard
           value="comparison"
-          className="group flex h-auto min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-2xl border border-black/5 bg-card px-4 py-3 text-left whitespace-normal text-foreground shadow-sm transition-all hover:bg-black/[0.02] dark:border-white/10 dark:hover:bg-white/[0.04] data-active:bg-card data-active:ring-2 data-active:ring-ink/80"
-        >
-          <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <ArrowLeftRight className="size-4 text-foreground" />
-            Period Comparison
-          </span>
-          <span className="text-base font-semibold tracking-tight">
-            {data.comparison === undefined
+          icon={ArrowLeftRight}
+          label="Period Comparison"
+          valueText={
+            data.comparison === undefined
               ? "—"
-              : (formatDelta(data.comparison.deltas.totalRevenue) ?? "—")}
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            revenue vs previous week
-          </span>
-        </TabsTrigger>
-
-        <TabsTrigger
+              : (formatDelta(data.comparison.deltas.totalRevenue) ?? "—")
+          }
+          hint="revenue vs previous week"
+        />
+        <TabCard
           value="year"
-          className="group flex h-auto min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-2xl border border-black/5 bg-card px-4 py-3 text-left whitespace-normal text-foreground shadow-sm transition-all hover:bg-black/[0.02] dark:border-white/10 dark:hover:bg-white/[0.04] data-active:bg-card data-active:ring-2 data-active:ring-ink/80"
-        >
-          <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <CalendarRange className="size-4 text-foreground" />
-            Year-over-Year
-          </span>
-          <span className="text-base font-semibold tracking-tight">
-            {yoy === null
+          icon={CalendarRange}
+          label="Year-over-Year"
+          valueText={
+            yoy === null
               ? "vs last year"
-              : (formatDelta(yoy.deltas.totalRevenue) ?? "—")}
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            same week one year earlier
-          </span>
-        </TabsTrigger>
-
-        <TabsTrigger
+              : (formatDelta(yoy.deltas.totalRevenue) ?? "—")
+          }
+          hint="same week one year earlier"
+        />
+        <TabCard
           value="budget"
-          className="group flex h-auto min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-2xl border border-black/5 bg-card px-4 py-3 text-left whitespace-normal text-foreground shadow-sm transition-all hover:bg-black/[0.02] dark:border-white/10 dark:hover:bg-white/[0.04] data-active:bg-card data-active:ring-2 data-active:ring-ink/80"
-        >
-          <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <Target className="size-4 text-foreground" />
-            Budget Performance
-          </span>
-          <span className="text-base font-semibold tracking-tight">
-            {budgetAttainment}%
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            of weekly revenue budget
-          </span>
-        </TabsTrigger>
-
-        <TabsTrigger
+          icon={Target}
+          label="Budget Performance"
+          valueText={`${budgetAttainment}%`}
+          hint="of weekly revenue budget"
+        />
+        <TabCard
           value="score"
-          className="group flex h-auto min-w-0 flex-1 flex-col items-start justify-start gap-0.5 rounded-2xl border border-black/5 bg-card px-4 py-3 text-left whitespace-normal text-foreground shadow-sm transition-all hover:bg-black/[0.02] dark:border-white/10 dark:hover:bg-white/[0.04] data-active:bg-card data-active:ring-2 data-active:ring-ink/80"
-        >
-          <span className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-            <Gauge className="size-4 text-foreground" />
-            Performance Score
-          </span>
-          <span className="text-base font-semibold tracking-tight">
-            {score.score} / 100
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            {score.gradeLabel}
-          </span>
-        </TabsTrigger>
+          icon={Gauge}
+          label="Performance Score"
+          valueText={`${score.score} / 100`}
+          hint={score.gradeLabel}
+        />
       </TabsList>
 
       <TabsContent

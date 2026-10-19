@@ -21,7 +21,7 @@ export function PeriodNav({
         type="button"
         onClick={() => onShift(-1)}
         aria-label="Previous week"
-        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none dark:hover:bg-white/10"
       >
         <ChevronLeft className="size-3.5" />
       </button>
@@ -34,7 +34,7 @@ export function PeriodNav({
         type="button"
         onClick={() => onShift(1)}
         aria-label="Next week"
-        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
+        className="grid size-7 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:outline-none dark:hover:bg-white/10"
       >
         <ChevronRight className="size-3.5" />
       </button>
@@ -43,7 +43,7 @@ export function PeriodNav({
         type="button"
         onClick={onToday}
         disabled={isCurrentWeek(range)}
-        className="ml-0.5 rounded-full bg-ink px-2.5 py-1 text-[11px] font-medium text-white transition-opacity hover:bg-ink/90 disabled:pointer-events-none disabled:opacity-35"
+        className="ml-0.5 rounded-full bg-ink px-2.5 py-1 text-[11px] font-medium text-white transition-opacity hover:bg-ink/90 focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-35"
       >
         This week
       </button>

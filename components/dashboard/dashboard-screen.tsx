@@ -116,7 +116,7 @@ export function DashboardScreen({
               href="/admin"
               prefetch={false}
               aria-label="Manage data"
-              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/10 bg-white/70 px-3 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/5"
+              className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/10 bg-white/70 px-3 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-black/[0.03] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none dark:border-white/10 dark:bg-white/5"
             >
               <Settings2 className="size-3.5" />
               <span className="hidden sm:inline">Admin</span>
@@ -124,39 +124,41 @@ export function DashboardScreen({
           </div>
         </header>
 
-        {error !== null && (
-          <div
-            role="alert"
-            className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
-          >
-            <span className="inline-flex items-center gap-2">
-              <AlertCircle className="size-4 shrink-0" />
-              {error}
-            </span>
-            <button
-              type="button"
-              onClick={() => setAttempt((value) => value + 1)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-foreground ring-1 ring-black/10 hover:bg-black/[0.03]"
+        <main id="main-content">
+          {error !== null && (
+            <div
+              role="alert"
+              className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive"
             >
-              <RotateCcw className="size-3" />
-              Retry
-            </button>
-          </div>
-        )}
+              <span className="inline-flex items-center gap-2">
+                <AlertCircle className="size-4 shrink-0" />
+                {error}
+              </span>
+              <button
+                type="button"
+                onClick={() => setAttempt((value) => value + 1)}
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-foreground ring-1 ring-black/10 hover:bg-black/[0.03] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none"
+              >
+                <RotateCcw className="size-3" />
+                Retry
+              </button>
+            </div>
+          )}
 
-        <RevenueCard
-          data={data}
-          compare={compare}
-          onCompareChange={setCompare}
-          range={range}
-          pending={pending}
-        />
+          <RevenueCard
+            data={data}
+            compare={compare}
+            onCompareChange={setCompare}
+            range={range}
+            pending={pending}
+          />
 
-        <InsightsTabs data={data} range={range} />
+          <InsightsTabs data={data} range={range} />
 
-        <p className="mt-4 text-center text-[11px] text-muted-foreground">
-          Demo data seeded relative to today · amounts in USD
-        </p>
+          <p className="mt-4 text-center text-[11px] text-muted-foreground">
+            Demo data seeded relative to today. Amounts are in USD.
+          </p>
+        </main>
       </div>
     </div>
   )

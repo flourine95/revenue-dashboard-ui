@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useMemo, useRef, useState } from "react"
 import { BarChart3, Loader2, TrendingDown, TrendingUp } from "lucide-react"
 import type { DashboardResponse } from "@/lib/api/types"
 import { buildChartRows, type SeriesVisibility } from "@/lib/dashboard-data"
@@ -30,7 +30,7 @@ function Kpi({
     <div className="rounded-2xl bg-panel px-4 py-4 sm:px-5">
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
       <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-        <p className="text-2xl font-semibold tracking-tight sm:text-[1.75rem]">
+        <p className="text-2xl font-semibold tracking-tight tabular-nums sm:text-[1.75rem]">
           {value}
         </p>
         {hasComparison && (
@@ -68,7 +68,7 @@ function SeriesToggle({
       role="checkbox"
       aria-checked={checked}
       onClick={onChange}
-      className="group inline-flex items-center gap-2 text-xs text-muted-foreground transition-colors hover:text-foreground sm:text-[13px]"
+      className="group inline-flex items-center gap-2 rounded-md text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none sm:text-[13px]"
     >
       <span
         className={cn(
@@ -168,7 +168,7 @@ export function RevenueCard({
   })
   const cardRef = useRef<HTMLElement>(null)
 
-  const rows = buildChartRows(data)
+  const rows = useMemo(() => buildChartRows(data), [data])
   const previous = data.comparison?.kpis
   const deltas = data.comparison?.deltas
 
@@ -179,11 +179,15 @@ export function RevenueCard({
   return (
     <section
       ref={cardRef}
+      aria-labelledby="revenue-trend-title"
       className="rounded-[28px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.18)] ring-1 ring-foreground/5 sm:p-7"
     >
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0 xl:w-[28rem]">
-          <h2 className="min-h-[3.25rem] max-w-md text-xl leading-tight font-semibold tracking-tight text-balance sm:min-h-[3.75rem] sm:text-2xl">
+          <h1
+            id="revenue-trend-title"
+            className="min-h-[3.25rem] max-w-md text-xl leading-tight font-semibold tracking-tight text-balance sm:min-h-[3.75rem] sm:text-2xl"
+          >
             {isCurrentWeek(range)
               ? "This Week's Revenue Trend"
               : "Revenue Trend"}
@@ -194,19 +198,21 @@ export function RevenueCard({
               {" "}
               vs Previous Period
             </span>
-          </h2>
+          </h1>
           <p className="mt-1.5 flex items-center gap-2 text-xs text-muted-foreground">
             {formatRange(range)}
             <span aria-hidden="true">·</span>
             <span>USD</span>
             <span
+              role="status"
+              aria-live="polite"
               aria-hidden={!pending}
               className={cn(
-                "inline-flex items-center gap-1 text-foreground/60",
+                "inline-flex items-center gap-1 text-muted-foreground",
                 !pending && "invisible"
               )}
             >
-              <Loader2 className="size-3 animate-spin" /> updating
+              <Loader2 className="size-3 animate-spin" /> Updating…
             </span>
           </p>
         </div>
@@ -239,7 +245,7 @@ export function RevenueCard({
             aria-pressed={compare}
             onClick={() => onCompareChange(!compare)}
             className={cn(
-              "inline-flex h-8 items-center gap-2 rounded-full px-3.5 text-xs font-medium whitespace-nowrap transition-all sm:text-[13px]",
+              "inline-flex h-8 items-center gap-2 rounded-full px-3.5 text-xs font-medium whitespace-nowrap transition-[background-color,color,box-shadow] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none sm:text-[13px]",
               compare
                 ? "bg-ink text-white shadow-sm hover:bg-ink/90"
                 : "bg-white text-foreground ring-1 ring-black/10 hover:bg-black/[0.03] dark:bg-transparent dark:ring-white/15"
@@ -299,7 +305,13 @@ export function RevenueCard({
         )}
         aria-busy={pending}
       >
-        <RevenueChart rows={rows} visible={visible} compare={compare} />
+        <RevenueChart
+          rows={rows}
+          visible={visible}
+          compare={compare}
+          label={`Revenue chart for ${formatRange(range)}`}
+          summary={`Total revenue ${formatCurrency(data.kpis.totalRevenue)}, average per day ${formatCurrency(data.kpis.averagePerDay)}, total covers ${formatNumber(data.kpis.totalCovers)}.`}
+        />
       </div>
 
       <div className="mt-3 space-y-2 border-t border-foreground/5 pt-4 text-xs text-muted-foreground">

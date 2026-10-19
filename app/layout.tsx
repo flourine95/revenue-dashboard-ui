@@ -1,3 +1,4 @@
+import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 
 import "./globals.css"
@@ -11,9 +12,17 @@ const fontMono = Geist_Mono({
   variable: "--font-mono",
 })
 
-export const metadata = {
-  title: "Revenue Dashboard",
+export const metadata: Metadata = {
+  title: {
+    default: "Revenue Dashboard",
+    template: "%s · Revenue Dashboard",
+  },
   description: "Weekly revenue, labour and covers performance.",
+}
+
+export const viewport: Viewport = {
+  themeColor: "#f2f1ee",
+  colorScheme: "light",
 }
 
 export default function RootLayout({
@@ -33,6 +42,12 @@ export default function RootLayout({
       )}
     >
       <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white focus:outline-none"
+        >
+          Skip to content
+        </a>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
