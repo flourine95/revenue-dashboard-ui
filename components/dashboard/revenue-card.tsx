@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { BarChart3, Loader2, TrendingDown, TrendingUp } from "lucide-react"
 import type { DashboardResponse } from "@/lib/api/types"
 import { buildChartRows, type SeriesVisibility } from "@/lib/dashboard-data"
 import { formatCurrency, formatDelta, formatNumber } from "@/lib/format"
 import { formatRange, isCurrentWeek, type DateRange } from "@/lib/period"
 import { cn } from "@/lib/utils"
+import { ExportButton } from "./export-button"
 import { RevenueChart } from "./revenue-chart"
 
 function Kpi({
@@ -163,6 +164,7 @@ export function RevenueCard({
     eatclub: true,
     labour: true,
   })
+  const cardRef = useRef<HTMLElement>(null)
 
   const rows = buildChartRows(data)
   const previous = data.comparison?.kpis
@@ -173,7 +175,10 @@ export function RevenueCard({
   }
 
   return (
-    <section className="rounded-[28px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.18)] ring-1 ring-foreground/5 sm:p-7">
+    <section
+      ref={cardRef}
+      className="rounded-[28px] bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_12px_32px_-16px_rgba(0,0,0,0.18)] ring-1 ring-foreground/5 sm:p-7"
+    >
       <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
         <div className="min-w-0">
           <h2 className="max-w-md text-xl leading-tight font-semibold tracking-tight text-balance sm:text-2xl">
@@ -196,7 +201,10 @@ export function RevenueCard({
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
+        <div
+          data-export-ignore="true"
+          className="flex flex-wrap items-center gap-x-4 gap-y-3"
+        >
           <SeriesToggle
             label="POS Revenue"
             color="var(--color-pos)"
@@ -230,6 +238,11 @@ export function RevenueCard({
             <BarChart3 className="size-3.5" />
             Compare to Previous
           </button>
+
+          <ExportButton
+            targetRef={cardRef}
+            filename={`revenue-${range.from}-to-${range.to}.png`}
+          />
         </div>
       </div>
 
