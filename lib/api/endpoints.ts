@@ -11,6 +11,7 @@ import type {
   LoginResponse,
   MetricInput,
   User,
+  YearOverYearResponse,
 } from "./types"
 import type { DateRange } from "@/lib/period"
 
@@ -31,6 +32,13 @@ export function getMe() {
 
 export function getDashboard(range: DateRange, compare: boolean) {
   return apiFetch<DashboardResponse>(dashboardPath(range, compare))
+}
+
+export function getYearOverYear(range: DateRange) {
+  const params = new URLSearchParams({ from: range.from, to: range.to })
+  return apiFetch<YearOverYearResponse>(
+    `/api/dashboard/year-over-year?${params.toString()}`
+  )
 }
 
 export function getAdminMetrics(range: DateRange) {

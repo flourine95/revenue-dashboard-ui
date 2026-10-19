@@ -56,6 +56,17 @@ export type DashboardResponse = {
   }
 }
 
+export type YearOverYearResponse = {
+  period: Period
+  kpis: Kpis
+  series: MetricDto[]
+  current: {
+    period: Period
+    kpis: Kpis
+  }
+  deltas: KpiDeltas
+}
+
 /** Body written by the admin upsert endpoint. */
 export type MetricInput = {
   posRevenue: number

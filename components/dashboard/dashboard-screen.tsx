@@ -7,6 +7,7 @@ import { getDashboard, logout } from "@/lib/api/endpoints"
 import { ApiError } from "@/lib/api/error"
 import type { DashboardResponse, User } from "@/lib/api/types"
 import { currentWeek, shiftWeek, type DateRange } from "@/lib/period"
+import { InsightsTabs } from "./insights-tabs"
 import { PeriodNav } from "./period-nav"
 import { RevenueCard } from "./revenue-card"
 import { UserMenu } from "./user-menu"
@@ -136,6 +137,13 @@ export function DashboardScreen({
           onCompareChange={setCompare}
           range={range}
           pending={pending}
+        />
+
+        <InsightsTabs
+          data={data}
+          range={range}
+          compare={compare}
+          onEnableCompare={() => setCompare(true)}
         />
 
         <p className="mt-4 text-center text-[11px] text-muted-foreground">
