@@ -1,19 +1,23 @@
-import { Button } from "@/components/ui/button"
+import { redirect } from "next/navigation"
+import { DashboardScreen } from "@/components/dashboard/dashboard-screen"
+import { ApiError } from "@/lib/api/error"
+import { dashboardPath } from "@/lib/api/paths"
+import { serverApiFetch } from "@/lib/api/server"
+import type { DashboardResponse } from "@/lib/api/types"
+import { requireUser } from "@/lib/auth"
+import { currentWeek } from "@/lib/period"
 
-export default function Page() {
-  return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
-    </div>
-  )
+export default async function Page() {
+  const user = await requireUser()
+  const range = currentWeek()
+
+  let data: DashboardResponse
+  try {
+    data = await serverApiFetch<DashboardResponse>(dashboardPath(range, true))
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) redirect("/login")
+    throw error
+  }
+
+  return <DashboardScreen user={user} initialRange={range} initialData={data} />
 }

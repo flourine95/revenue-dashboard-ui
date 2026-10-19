@@ -7,6 +7,17 @@
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: var(--font-sans);
+    --color-surface: var(--surface);
+    --color-panel: var(--panel);
+    --color-ink: var(--ink);
+    --color-pos: var(--pos);
+    --color-eatclub: var(--eatclub);
+    --color-labour: var(--labour);
+    --color-prev-pos: var(--prev-pos);
+    --color-prev-total: var(--prev-total);
+    --color-prev-labour: var(--prev-labour);
+    --color-positive: var(--positive);
+    --color-negative: var(--negative);
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -48,6 +59,17 @@
 }
 
 :root {
+    --surface: #f2f1ee;
+    --panel: #f6f2ee;
+    --ink: #1d1d1b;
+    --pos: #262626;
+    --eatclub: #5b57e8;
+    --labour: #f26a21;
+    --prev-pos: #cdcdcd;
+    --prev-total: #c9c4fb;
+    --prev-labour: #f8cbb2;
+    --positive: #15803d;
+    --negative: #b91c1c;
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -83,6 +105,14 @@
 }
 
 .dark {
+    --surface: #151514;
+    --panel: #1e1e1c;
+    --ink: #f2f1ee;
+    --prev-pos: #4a4a48;
+    --prev-total: #4b477e;
+    --prev-labour: #7a4a31;
+    --positive: #4ade80;
+    --negative: #f87171;
     --background: oklch(0.145 0 0);
     --foreground: oklch(0.985 0 0);
     --card: oklch(0.205 0 0);
