@@ -15,13 +15,14 @@ The API runs in a separate repository. Start it on port 4000 before you start th
 | PNG export | html-to-image, loaded only when the export button is pressed  |
 | Tests      | Vitest                                                        |
 
-## Prerequisites
+## Setup
 
-- Node.js 20.19 or newer
-- pnpm
-- The API running at `http://localhost:4000`
+The API must be running on port 4000 before the app will load any data. Start it first, following the [API README](https://github.com/flourine95/revenue-dashboard-api).
 
-## Run locally
+You also need:
+
+- Node.js 20.19+, 22.12+ or 24+ (22 LTS recommended)
+- pnpm 12.11.2: `corepack enable && corepack prepare pnpm@12.11.2 --activate`
 
 ```bash
 pnpm install
@@ -29,7 +30,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Open http://localhost:3000. The app redirects to `/login`. The API seed creates the demo admin account:
+Open http://localhost:3000. The app redirects to `/login`, where the demo admin account from the API seed works:
 
 | Email                 | Password    |
 | --------------------- | ----------- |
@@ -42,7 +43,7 @@ Open http://localhost:3000. The app redirects to `/login`. The API seed creates 
 | `API_URL` | `http://localhost:4000` | server | Fetches made while rendering on the server |
 | `NEXT_PUBLIC_API_URL` | `http://localhost:4000` | browser | Login, logout and client-side refetches |
 
-`NEXT_PUBLIC_API_URL` must match the API `CORS_ORIGIN`, which defaults to `http://localhost:3000`. The browser sends the session cookie directly to the API.
+If you change `NEXT_PUBLIC_API_URL`, change `CORS_ORIGIN` in the API `.env` to the origin the browser loads the app from. Without that, sign-in fails because the browser blocks the cross-origin request.
 
 ## Routes
 
@@ -56,20 +57,20 @@ Both protected routes check the session on the server before they fetch data. An
 
 ## Features
 
-- Week navigation with previous, next and “This week” controls.
+- Week navigation with previous, next and "This week" controls.
 - Series toggles for POS revenue, Eatclub revenue and labour cost.
 - KPI cards for total revenue, average per day and total covers, each with the previous period and percent change.
 - Event markers above the day they happened.
-- The y-axis keeps the reference grid of 0.75k steps and only grows when a busy week would clip, so weeks stay comparable.
-- PNG export of the card. The export omits the toggle row and keeps the chart legend.
+- The y-axis holds the reference 0.75k grid, so two weeks can be compared by eye. It grows only when a busier week would clip.
+- PNG export of the card, without the toggle row but with the chart legend.
 - Four insight tabs: period comparison, year-over-year, budget performance and performance score.
 - Admin tables for the selected week, including days without data.
 
-The previous period is always part of the dashboard payload. The comparison toggle changes rendering only, which keeps the layout stable and avoids a request on every press.
+The previous period always arrives with the dashboard payload. The comparison toggle changes only what the chart draws, so pressing it costs no request and moves nothing on the page.
 
 ## Performance score
 
-The score is a weighted view of three signals:
+The score is a weighted view of the week:
 
 - Revenue against the weekly budget: 50%
 - Labour cost against a 30% target ratio: 30%
@@ -81,7 +82,7 @@ The formula and its unit tests live in [`lib/score.ts`](lib/score.ts) and [`test
 
 `/admin` lists every day in the selected week, including days without a row. Saving a day replaces the whole day. Events support create, edit and delete, and both destructive actions use a confirmation dialog.
 
-All admin requests use the same session cookie as the dashboard. The API rejects requests without a valid session even when someone calls the endpoint outside the UI.
+All admin requests use the same session cookie as the dashboard. The API rejects requests without a valid session.
 
 ## Tests and checks
 
@@ -92,7 +93,7 @@ pnpm lint        # ESLint
 pnpm build       # production build
 ```
 
-The unit tests cover date ranges, number and currency formatting, the performance score, the join between the current and previous series, and the chart axis scale. Browser checks for login, navigation, admin CRUD and export were run manually with Playwright and are not committed.
+The unit tests cover date ranges, number and currency formatting, the performance score, the join between the current and previous series, and the chart axis scale. Login, navigation, admin CRUD and export were checked by hand in a browser; those scripts are not committed.
 
 ## Scripts
 
@@ -111,7 +112,7 @@ The unit tests cover date ranges, number and currency formatting, the performanc
 
 ```text
 app/
-  page.tsx               dashboard page with parallel session and data fetch
+  page.tsx               dashboard page, fetching the session and data
   login/page.tsx         sign-in page
   admin/page.tsx         admin page
   loading.tsx            route-level skeleton
@@ -129,12 +130,13 @@ lib/
 tests/                   Vitest unit tests
 ```
 
-## Notes
+## Behaviour to know about
 
-- The session cookie is httpOnly and shared across ports on `localhost`, so the Next.js server can validate the session the browser received from the API.
-- The interface defaults to the light theme. Press `d` to toggle dark mode.
-- The chart scrolls horizontally on narrow screens.
-- The selected week and active tab are not in the URL. A reload returns to the current week.
+The interface opens in the light theme; press `d` to switch to dark. On narrow screens the chart scrolls sideways.
+
+The week and the open tab are held in memory, so a reload returns you to the current week.
+
+The session cookie is httpOnly and shared across ports on `localhost`, which is how the Next.js server validates the session the browser received from the API.
 
 ## Related documentation
 
