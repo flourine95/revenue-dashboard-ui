@@ -119,7 +119,7 @@ export function DashboardScreen({
               className="inline-flex h-8 items-center gap-1.5 rounded-full border border-black/10 bg-white/70 px-3 text-xs font-medium text-foreground shadow-sm backdrop-blur-sm transition-colors hover:bg-black/[0.03] focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:outline-none dark:border-white/10 dark:bg-white/5"
             >
               <Settings2 className="size-3.5" />
-              <span className="hidden sm:inline">Admin</span>
+              <span className="hidden sm:inline">Manage data</span>
             </Link>
           </div>
         </header>

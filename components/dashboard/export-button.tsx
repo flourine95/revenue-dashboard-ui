@@ -34,7 +34,10 @@ export function ExportButton({
         backgroundColor: "#ffffff",
         filter: (element) => {
           if (!(element instanceof HTMLElement)) return true
-          return element.dataset.exportIgnore !== "true"
+          // Only skip the marked element and its descendants. A plain
+          // `dataset` check would also test ancestors and could blank out
+          // the whole card if the attribute were ever moved up the tree.
+          return element.closest('[data-export-ignore="true"]') === null
         },
       })
 

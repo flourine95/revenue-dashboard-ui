@@ -13,33 +13,14 @@ import {
   useYAxisScale,
 } from "recharts"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
+import { buildScale, type ChartScale } from "@/lib/chart-scale"
 import type { ChartRow, SeriesVisibility } from "@/lib/dashboard-data"
-import { formatAxisTick, formatCurrency, formatDayLabel } from "@/lib/format"
-
-const STEP_CANDIDATES = [
-  250, 500, 750, 1000, 1500, 2000, 2500, 5000, 10000, 25000, 50000, 100000,
-]
-
-type ChartScale = { max: number; step: number; ticks: number[] }
-
-function buildScale(rows: ChartRow[]): ChartScale {
-  const peak = rows.reduce(
-    (max, row) =>
-      Math.max(max, row.total, row.labour, row.prevTotal, row.prevLabour),
-    0
-  )
-  const target = Math.max(peak * 1.14, 1000)
-  const step =
-    STEP_CANDIDATES.find((candidate) => target / candidate <= 5) ??
-    STEP_CANDIDATES[STEP_CANDIDATES.length - 1]
-  const max = Math.ceil(target / step) * step
-  const ticks = Array.from(
-    { length: Math.round(max / step) + 1 },
-    (_, i) => i * step
-  )
-
-  return { max, step, ticks }
-}
+import {
+  formatAxisTick,
+  formatCurrency,
+  formatDayLabel,
+  formatNumber,
+} from "@/lib/format"
 
 function markerValue(row: ChartRow, scale: ChartScale): number {
   const tallest = Math.max(row.total, row.labour, row.prevTotal)
@@ -155,7 +136,9 @@ function ChartTooltip({
               {item.name}
             </span>
             <span className="font-medium tabular-nums">
-              {formatCurrency(Number(item.value ?? 0))}
+              {item.dataKey === "covers"
+                ? formatNumber(Number(item.value ?? 0))
+                : formatCurrency(Number(item.value ?? 0))}
             </span>
           </li>
         ))}
@@ -221,6 +204,7 @@ export function RevenueChart({
               tickLine={false}
               width={48}
               tick={{ fontSize: 12, fill: "currentColor", opacity: 0.6 }}
+              interval={0}
             />
 
             {compare && (
@@ -237,6 +221,14 @@ export function RevenueChart({
                   dataKey="prevTotal"
                   name="Total Revenue (previous)"
                   fill="var(--color-prev-total)"
+                  barSize={13}
+                  radius={roundedTop}
+                  isAnimationActive={false}
+                />
+                <Bar
+                  dataKey="prevLabour"
+                  name="Labour Costs (previous)"
+                  fill="var(--color-prev-labour)"
                   barSize={13}
                   radius={roundedTop}
                   isAnimationActive={false}
