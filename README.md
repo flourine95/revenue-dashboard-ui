@@ -138,5 +138,5 @@ tests/                   Vitest unit tests
 
 ## Related documentation
 
-- [Root project README](../README.md)
-- [API README](../revenue-dashboard-api/README.md)
+- [Project overview](https://github.com/flourine95/revenue-dashboard)
+- [API repository](https://github.com/flourine95/revenue-dashboard-api)
