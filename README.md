@@ -60,6 +60,7 @@ Both protected routes check the session on the server before they fetch data. An
 - Series toggles for POS revenue, Eatclub revenue and labour cost.
 - KPI cards for total revenue, average per day and total covers, each with the previous period and percent change.
 - Event markers above the day they happened.
+- The y-axis keeps the reference grid of 0.75k steps and only grows when a busy week would clip, so weeks stay comparable.
 - PNG export of the card. The export omits the toggle row and keeps the chart legend.
 - Four insight tabs: period comparison, year-over-year, budget performance and performance score.
 - Admin tables for the selected week, including days without data.
@@ -91,7 +92,7 @@ pnpm lint        # ESLint
 pnpm build       # production build
 ```
 
-The unit tests cover date ranges, number and currency formatting, the performance score and the join between the current and previous series. Browser checks for login, navigation, admin CRUD and export were run manually with Playwright and are not committed.
+The unit tests cover date ranges, number and currency formatting, the performance score, the join between the current and previous series, and the chart axis scale. Browser checks for login, navigation, admin CRUD and export were run manually with Playwright and are not committed.
 
 ## Scripts
 
@@ -122,6 +123,7 @@ components/
   ui/                    shadcn/ui primitives
 lib/
   api/                   typed client, server fetcher, DTOs
+  chart-scale.ts         y-axis scale for the revenue chart
   period.ts              week ranges and range formatting
   score.ts               performance score formula
 tests/                   Vitest unit tests
