@@ -120,7 +120,7 @@ app/
 components/
   dashboard/             chart, KPI card, period navigation, insight tabs, export
   admin/                 metric and event tables, dialogs
-  ui/                    shadcn/ui primitives
+  ui/                    the seven shadcn/ui primitives the app uses
 lib/
   api/                   typed client, server fetcher, DTOs
   chart-scale.ts         y-axis scale for the revenue chart
